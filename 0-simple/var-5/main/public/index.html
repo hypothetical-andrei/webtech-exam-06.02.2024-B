@@ -1,0 +1,58 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A simple app</title>
+    <script>
+        window.onload = () => {
+            let main = document.getElementById('main')
+            let nameInput = document.getElementById('nameInput')
+            let jobInput = document.getElementById('jobInput')
+            let addBtn = document.getElementById('addBtn')
+            
+            const load = async () =>{
+                try{
+                    let response = await fetch('/employees')
+                    let data = await response.json()
+                    let rows = data.map((e) => `
+                        <div>
+                            ${e.name} ${e.job}
+                        </div>
+                    `)
+                    main.innerHTML = rows.join('')
+                }
+                catch(err){
+                    console.warn(err)
+                }
+            }
+
+            // TODO
+
+            addBtn.onclick = async () => {
+                await fetch('/employees', {
+                    method: 'post',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        name: nameInput.value,
+                        job: jobInput.value
+                    })
+                })
+                load()
+            }
+
+            load()
+        }
+    </script>
+</head>
+<body>
+    <h2>A simple app</h2>
+    <div id=main></div>
+    <div id="form">
+        <input type="text" id="nameInput" placeholder="name" />
+        <input type="text" id="jobInput" placeholder="job" />
+        <!-- TODO -->
+    </div>
+</body>
+</html>
